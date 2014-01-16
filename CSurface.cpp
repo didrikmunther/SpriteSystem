@@ -2,26 +2,26 @@
 
 void CSurface::RenderRect(int x, int y, int w, int h, SDL_Surface* Surface_Destination, int r, int g, int b)
 {
-    SDL_Rect* Rect;
+    SDL_Rect Rect;
 
-    Rect->x = x;
-    Rect->y = y;
-    Rect->w = w;
-    Rect->h = h;
+    Rect.x = x;
+    Rect.y = y;
+    Rect.w = w;
+    Rect.h = h;
 
-    SDL_FillRect(Surface_Destination, Rect, SDL_MapRGB(Surface_Destination->format, r, g, b));
+    SDL_FillRect(Surface_Destination, &Rect, SDL_MapRGB(Surface_Destination->format, r, g, b));
 }
 
 void CSurface::RenderRect(int x, int y, int w, int h, SDL_Surface* Surface_Destination, Uint32 Color)
 {
-    SDL_Rect* Rect;
+    SDL_Rect Rect;
 
-    Rect->x = x;
-    Rect->y = y;
-    Rect->w = w;
-    Rect->h = h;
+    Rect.x = x;
+    Rect.y = y;
+    Rect.w = w;
+    Rect.h = h;
 
-    SDL_FillRect(Surface_Destination, Rect, Color);
+    SDL_FillRect(Surface_Destination, &Rect, Color);
 }
 
 void CSurface::RenderRect(SDL_Rect* Rect, SDL_Surface* Surface_Destination, int r, int g, int b)
@@ -36,17 +36,14 @@ void CSurface::RenderRect(SDL_Rect* Rect, SDL_Surface* Surface_Destination, Uint
 
 SDL_Surface* CSurface::LoadSurface(std::string Path)
 {
-    std::cout << "CSurface::LoadSurface\n";
-
     SDL_Surface* LoadedSurface = NULL;
     SDL_Surface* OptimizedSurface = NULL;
 
-    // Just change this to image_load later
-    LoadedSurface = SDL_LoadBMP(Path.c_str());
+    LoadedSurface = IMG_Load(Path.c_str());
 
     if(LoadedSurface != NULL)
     {
-        OptimizedSurface = SDL_DisplayFormat(LoadedSurface);
+        OptimizedSurface = SDL_DisplayFormatAlpha(LoadedSurface);
 
         SDL_FreeSurface(LoadedSurface);
     }
@@ -72,14 +69,6 @@ void CSurface::ApplySprite(int x, int y, CSprite* Sprite, SDL_Surface* Destinati
     Offset.x = x;
     Offset.y = y;
 
-//    std::cout << CSprite::TestSprite->SpriteSheet->Surf_Sheet << " from applysurf\n";
-
-    SDL_Rect bla = {0, 0, 16, 16};
-
-//    std::cout << bla.w << std::endl;
-
-    SDL_BlitSurface(Sprite->GetSurface(), &bla, Destination, &Offset); // It crashes here
-//    SDL_BlitSurface(CSpriteSheet::TileSheet->Surf_Sheet, &Sprite->Offset, Destination, &Offset); // Not here
-//    SDL_BlitSurface(CSprite::TestSprite->SpriteSheet->Surf_Sheet, &Sprite->Offset, Destination, &Offset); // It crashes here
+    SDL_BlitSurface(Sprite->GetSurface(), &Sprite->Offset, Destination, &Offset); // It crashes here
 
 }

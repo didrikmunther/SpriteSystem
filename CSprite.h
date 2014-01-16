@@ -4,14 +4,18 @@
 #include <SDL.h>
 #include "CSpriteSheet.h"
 #include "CSurface.h"
+#include <vector>
 
 class CSpriteSheet;
 
 class CSprite
 {
 public:
-    static CSprite* TestSprite;
+    static std::vector<CSprite*> SpriteList;
 
+    static CSprite* MinecraftSprite;
+
+public:
     CSprite(int x, int y, int w, int h, CSpriteSheet* SpriteSheet);
     ~CSprite();
 
@@ -24,8 +28,6 @@ public:
     void OnRender(int x, int y, SDL_Surface* Surf_Destination);
 
 public:
-    static void ConstructSheets();
-
     SDL_Surface* GetSurface();
 
 };

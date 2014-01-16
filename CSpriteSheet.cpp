@@ -2,11 +2,14 @@
 
 #include <iostream>
 
-CSpriteSheet* CSpriteSheet::TileSheet = nullptr;
+std::vector<CSpriteSheet*> CSpriteSheet::SpriteSheetList;
 
-CSpriteSheet::CSpriteSheet(std::string Path, int Size) :
-Surf_Sheet(CSurface::LoadSurface(Path)), Size(Size)
+CSpriteSheet* CSpriteSheet::MinecraftSheet = new CSpriteSheet("./gfx/minecraft.png");
+
+CSpriteSheet::CSpriteSheet(std::string Path) :
+Surf_Sheet(nullptr), Path(Path)
 {
+    CSpriteSheet::SpriteSheetList.push_back(this);
 }
 
 CSpriteSheet::~CSpriteSheet()
@@ -15,7 +18,21 @@ CSpriteSheet::~CSpriteSheet()
     std::cout << "CSpriteSheet dtor\n";
 }
 
-void CSpriteSheet::ConstructSheets()
+// STATIC FUNCTION
+// Fills Surf_Sheet on all the static spritesheets
+int CSpriteSheet::ConstructSheets()
 {
-    CSpriteSheet::TileSheet = new CSpriteSheet("blocksheet.bmp", 256);
+    for (std::vector<CSpriteSheet*>::iterator it = CSpriteSheet::SpriteSheetList.begin();
+        it != CSpriteSheet::SpriteSheetList.end();
+        it++)
+    {
+        // Incase loading goes wrong. (in that case the image is probably not there)
+        if(((*it)->Surf_Sheet = CSurface::LoadSurface((*it)->Path)) == NULL)
+        {
+            std::cout << "error: " << (*it)->Path << " is not present.\n";
+            return -1;
+        }
+    }
+
+    return 0;
 }

@@ -18,6 +18,8 @@ public:
     CSprite* Sprite;
 
 public:
+    void OnLoop();
+
     void OnRender(SDL_Surface* Surf_Destination);
 
 };

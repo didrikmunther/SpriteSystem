@@ -2,35 +2,27 @@
 
 #include <iostream>
 
-CSprite* CSprite::TestSprite = nullptr;
+std::vector<CSprite*> CSprite::SpriteList;
 
-CSprite::CSprite(int x, int y, int w, int h, CSpriteSheet* SpriteSheet)
+CSprite* CSprite::MinecraftSprite = new CSprite(10 * 16, 0 * 16, 16, 16, CSpriteSheet::MinecraftSheet);
+
+CSprite::CSprite(int x, int y, int w, int h, CSpriteSheet* SpriteSheet) :
+Offset{x, y, w, h}, SpriteSheet(SpriteSheet)
 {
-    Offset.x = x;
-    Offset.y = y;
-    Offset.w = w;
-    Offset.h = h;
-
-    this->SpriteSheet = SpriteSheet;
+    CSprite::SpriteList.push_back(this);
 }
 
 CSprite::~CSprite()
 {
+    std::cout << "CSprite dtor\n";
 }
 
 void CSprite::OnRender(int x, int y, SDL_Surface* Surf_Destination)
 {
-    CSurface::ApplySprite(x, y, this, Surf_Destination); // It crashes here.
-}
-
-void CSprite::ConstructSheets()
-{
-    CSprite::TestSprite = new CSprite(0, 0, 16, 16, CSpriteSheet::TileSheet);
+    CSurface::ApplySprite(x, y, this, Surf_Destination);
 }
 
 SDL_Surface* CSprite::GetSurface()
 {
-    std::cout << Offset.y << std::endl; // This is where it crashes
-
-    return SpriteSheet->Surf_Sheet; // This is where it crashes
+    return SpriteSheet->Surf_Sheet;
 }

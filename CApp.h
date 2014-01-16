@@ -2,6 +2,7 @@
 #define CAPP_H
 
 #include <SDL.h>
+#include <SDL_image.h>
 #include <sstream>
 #include "CSurface.h"
 
@@ -43,7 +44,7 @@ private:
     Uint32 BackgroundColor;
     SDL_Rect BackgroundRect;
 
-    CEntity* ATile = new CEntity(CSprite::TestSprite); // This is the entity I want to render
+    CEntity* ATile = new CEntity(CSprite::MinecraftSprite); // This is the entity I want to render
 
 public:
     CApp();

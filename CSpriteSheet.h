@@ -4,23 +4,26 @@
 #include <SDL.h>
 #include <string>
 #include "CSurface.h"
+#include <vector>
 
 class CSpriteSheet
 {
 public:
-    static CSpriteSheet* TileSheet;
+    static std::vector<CSpriteSheet*> SpriteSheetList;
+
+    static CSpriteSheet* MinecraftSheet;
 
 public:
-    CSpriteSheet(std::string Path, int Size);
+    CSpriteSheet(std::string Path);
     ~CSpriteSheet();
 
 public:
     SDL_Surface* Surf_Sheet;
 
-    int Size;
+    std::string Path;
 
 public:
-    static void ConstructSheets();
+    static int ConstructSheets();
 
 };
 

@@ -2,11 +2,12 @@
 
 CApp::CApp() :
 Running(true), Surface_Display(nullptr),
-WIDTH(360), HEIGHT(360), BPP(32),
+WIDTH(640), HEIGHT(480), BPP(32),
 LastTime(SDL_GetTicks()), Timer(SDL_GetTicks()),
 NS(1000.0f/60.0f), Delta(0), Frames(0), Updates(0),
 Intro("Physics"),
-BackgroundRect{0, 0, WIDTH, HEIGHT}
+BackgroundRect{0, 0, WIDTH, HEIGHT},
+MouseDown(false), MouseX(0), MouseY(0)
 {
 //    float LastTime;
 //    float Timer;
@@ -18,7 +19,20 @@ BackgroundRect{0, 0, WIDTH, HEIGHT}
 
 int CApp::OnExecute()
 {
-    if(OnInit() == -1) return 1;
+    switch(OnInit())
+    {
+    case -1: // SDL_Init() failed.
+        std::cout << "SDL_Init() failed.\n";
+        return 1;
+        break;
+
+    case -2: // A sprite sheet is not present
+        OnCleanup();
+        return 1;
+        break;
+    }
+
+    std::cout << "Entering game loop\n";
 
     while(Running)
     {
@@ -31,13 +45,13 @@ int CApp::OnExecute()
         Delta += (Now - LastTime) / NS;
         LastTime = Now;
 
-//        while(Delta >= 1)
-//        {
-//            OnLoop();
-//
-//            Updates++;
-//            Delta--;
-//        }
+        while(Delta >= 1)
+        {
+            OnLoop();
+
+            Updates++;
+            Delta--;
+        }
 
         OnRender();
 
@@ -54,6 +68,8 @@ int CApp::OnExecute()
         }
     }
 
+    std::cout << "Leaving game loop\n";
+
     OnCleanup();
 
     return 0;
@@ -65,18 +81,19 @@ CApp::~CApp()
 
 int CApp::OnInit()
 {
+    std::cout << "CApp::OnInit()\n";
+
     if((SDL_Init(SDL_INIT_EVERYTHING)) == -1) return -1;
 
     Surface_Display = SDL_SetVideoMode(WIDTH, HEIGHT, BPP, SDL_HWSURFACE | SDL_DOUBLEBUF);
 
-    BackgroundColor = SDL_MapRGB(Surface_Display->format, 0, 0xFF, 0xFF);
+    BackgroundColor = SDL_MapRGB(Surface_Display->format, 0xFF, 0xFF, 0xFF);
 
     //==
 
-    CSpriteSheet::ConstructSheets();
-    CSprite::ConstructSheets();
+    std::cout << "Loading graphics...\n";
 
-    std::cout << CSpriteSheet::TileSheet->Surf_Sheet << std::endl;
+    if(CSpriteSheet::ConstructSheets() == -1) return -2;
 
     //==
 
@@ -85,6 +102,14 @@ int CApp::OnInit()
 
 void CApp::OnLoop()
 {
+    // Temporary
+    if(MouseDown)
+    {
+        ATile->Body.X = MouseX;
+        ATile->Body.Y = MouseY;
+    }
+
+    ATile->OnLoop();
 }
 
 void CApp::OnRender()
@@ -100,6 +125,24 @@ void CApp::OnRender()
 
 void CApp::OnCleanup()
 {
+    for (std::vector<CSprite*>::iterator it = CSprite::SpriteList.begin();
+        it != CSprite::SpriteList.end();
+        it++)
+    {
+        delete *(it);
+    }
+    CSprite::SpriteList.clear();
+
+    for (std::vector<CSpriteSheet*>::iterator it = CSpriteSheet::SpriteSheetList.begin();
+        it != CSpriteSheet::SpriteSheetList.end();
+        it++)
+    {
+        delete *(it);
+    }
+    CSpriteSheet::SpriteSheetList.clear();
+
+    delete ATile;
+
     SDL_Quit();
 }
 
@@ -120,6 +163,10 @@ void CApp::OnEvent(SDL_Event* Event)
         break;
 
     case SDL_KEYDOWN:
+        switch(Event->key.keysym.sym)
+        {
+            default:;
+        }
         break;
 
     case SDL_KEYUP:
