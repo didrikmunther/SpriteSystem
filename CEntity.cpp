@@ -1,8 +1,11 @@
 #include "CEntity.h"
 
+std::vector<CEntity*> CEntity::EntityList;
+
 CEntity::CEntity(CSprite* Sprite) :
 Sprite(Sprite)
 {
+    EntityList.push_back(this);
 }
 
 CEntity::~CEntity()

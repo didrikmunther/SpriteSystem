@@ -105,18 +105,31 @@ void CApp::OnLoop()
     // Temporary
     if(MouseDown)
     {
-        ATile->Body.X = MouseX;
-        ATile->Body.Y = MouseY;
+        MyEntity->Body.X = MouseX;
+        MyEntity->Body.Y = MouseY;
     }
 
-    ATile->OnLoop();
+    // Loop all Entities
+    for (std::vector<CEntity*>::iterator it = CEntity::EntityList.begin();
+        it != CEntity::EntityList.end();
+        it++)
+    {
+        (*it)->OnLoop();
+    }
 }
 
 void CApp::OnRender()
 {
+    // Render all Entities
     CSurface::RenderRect(&BackgroundRect, Surface_Display, BackgroundColor);
 
-    ATile->OnRender(Surface_Display);
+    // Render all Entities
+    for (std::vector<CEntity*>::iterator it = CEntity::EntityList.begin();
+        it != CEntity::EntityList.end();
+        it++)
+    {
+        (*it)->OnRender(Surface_Display);
+    }
 
     //==
 
@@ -125,6 +138,7 @@ void CApp::OnRender()
 
 void CApp::OnCleanup()
 {
+    // Cleanup all Sprites
     for (std::vector<CSprite*>::iterator it = CSprite::SpriteList.begin();
         it != CSprite::SpriteList.end();
         it++)
@@ -133,6 +147,7 @@ void CApp::OnCleanup()
     }
     CSprite::SpriteList.clear();
 
+    // Cleanup all SpriteSheets
     for (std::vector<CSpriteSheet*>::iterator it = CSpriteSheet::SpriteSheetList.begin();
         it != CSpriteSheet::SpriteSheetList.end();
         it++)
@@ -141,7 +156,13 @@ void CApp::OnCleanup()
     }
     CSpriteSheet::SpriteSheetList.clear();
 
-    delete ATile;
+    // Cleanup all Entities
+    for (std::vector<CEntity*>::iterator it = CEntity::EntityList.begin();
+        it != CEntity::EntityList.end();
+        it++)
+    {
+        delete *(it);
+    }
 
     SDL_Quit();
 }
@@ -165,6 +186,14 @@ void CApp::OnEvent(SDL_Event* Event)
     case SDL_KEYDOWN:
         switch(Event->key.keysym.sym)
         {
+        case SDLK_1:
+            MyEntity->Sprite = CSprite::MinecraftSprite; // Temp
+            break;
+
+        case SDLK_2:
+            MyEntity->Sprite = CSprite::MinecraftSprite2; // Temp
+            break;
+
             default:;
         }
         break;

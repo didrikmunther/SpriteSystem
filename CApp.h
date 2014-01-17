@@ -44,7 +44,7 @@ private:
     Uint32 BackgroundColor;
     SDL_Rect BackgroundRect;
 
-    CEntity* ATile = new CEntity(CSprite::MinecraftSprite); // This is the entity I want to render
+    CEntity* MyEntity = new CEntity(CSprite::MinecraftSprite2); // This is a test entity
 
 public:
     CApp();

@@ -2,6 +2,7 @@
 #define CENTITY_H
 
 #include <SDL.h>
+#include <vector>
 #include "CBody.h"
 #include "CSprite.h"
 #include <iostream>
@@ -9,6 +10,8 @@
 class CEntity
 {
 public:
+    static std::vector<CEntity*> EntityList;
+
     CEntity(CSprite* Sprite);
     ~CEntity();
 

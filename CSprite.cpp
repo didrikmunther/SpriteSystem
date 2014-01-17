@@ -5,6 +5,7 @@
 std::vector<CSprite*> CSprite::SpriteList;
 
 CSprite* CSprite::MinecraftSprite = new CSprite(10 * 16, 0 * 16, 16, 16, CSpriteSheet::MinecraftSheet);
+CSprite* CSprite::MinecraftSprite2 = new CSprite(10 * 16, 4 * 16, 16, 16, CSpriteSheet::MinecraftSheet);
 
 CSprite::CSprite(int x, int y, int w, int h, CSpriteSheet* SpriteSheet) :
 Offset{x, y, w, h}, SpriteSheet(SpriteSheet)

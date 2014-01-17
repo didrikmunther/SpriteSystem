@@ -14,6 +14,7 @@ public:
     static std::vector<CSprite*> SpriteList;
 
     static CSprite* MinecraftSprite;
+    static CSprite* MinecraftSprite2;
 
 public:
     CSprite(int x, int y, int w, int h, CSpriteSheet* SpriteSheet);
