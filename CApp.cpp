@@ -177,6 +177,18 @@ void CApp::OnEvent(SDL_Event* Event)
         break;
 
     case SDL_KEYDOWN:
+        switch(Event->key.keysym.sym)
+        {
+        case SDLK_1:
+            MyEntity->Sprite = ResourceManager.SpriteMap.find("Apple")->second;
+            break;
+
+        case SDLK_2:
+            MyEntity->Sprite = ResourceManager.SpriteMap.find("Flask")->second;
+            break;
+
+        default:;
+        }
         break;
 
     case SDL_KEYUP:
