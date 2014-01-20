@@ -9,12 +9,6 @@ Intro("Physics"),
 BackgroundRect{0, 0, WIDTH, HEIGHT},
 MouseDown(false), MouseX(0), MouseY(0)
 {
-//    float LastTime;
-//    float Timer;
-//    const float NS;
-//    float Delta;
-//    int Frames;
-//    int Updates;
 }
 
 int CApp::OnExecute()
@@ -66,11 +60,19 @@ int CApp::OnExecute()
             Updates = 0;
             Frames = 0;
         }
+
+        // Temporary delay
+        // Limits FPS to 200
+        SDL_Delay(5);
     }
 
     std::cout << "Leaving game loop\n";
 
+    std::cout << "Cleaning up...\n";
+
     OnCleanup();
+
+    std::cout << "Done!\n";
 
     return 0;
 }
@@ -91,9 +93,24 @@ int CApp::OnInit()
 
     //==
 
+    // Now that SDL_Init() has been called we can now load all the SpriteSheets.
     std::cout << "Loading graphics...\n";
 
-    if(CSpriteSheet::ConstructSheets() == -1) return -2;
+    for(auto it = ResourceManager.SpriteSheetMap.begin(); it != ResourceManager.SpriteSheetMap.end(); it++)
+    {
+        if((it->second->Surf_Sheet = CSurface::LoadSurface(it->second->Path)) == NULL)
+        {
+            std::cout << "error: " << it->second->Path << " is not present.\n";
+            return -2;
+        }
+    }
+
+    //==
+
+    MyEntity = std::shared_ptr<CEntity>(new CEntity(ResourceManager.SpriteMap.find("Apple")->second));
+
+    EntityList.push_back(MyEntity);
+    EntityList.push_back(std::make_shared<CEntity>(ResourceManager.SpriteMap.find("Bucket")->second));
 
     //==
 
@@ -105,13 +122,13 @@ void CApp::OnLoop()
     // Temporary
     if(MouseDown)
     {
-        MyEntity->Body.X = MouseX;
-        MyEntity->Body.Y = MouseY;
+        MyEntity->Body.X = MouseX - 8;
+        MyEntity->Body.Y = MouseY - 8;
     }
 
     // Loop all Entities
-    for (std::vector<CEntity*>::iterator it = CEntity::EntityList.begin();
-        it != CEntity::EntityList.end();
+    for (auto it = EntityList.begin();
+        it != EntityList.end();
         it++)
     {
         (*it)->OnLoop();
@@ -120,12 +137,12 @@ void CApp::OnLoop()
 
 void CApp::OnRender()
 {
-    // Render all Entities
+    // Render background
     CSurface::RenderRect(&BackgroundRect, Surface_Display, BackgroundColor);
 
     // Render all Entities
-    for (std::vector<CEntity*>::iterator it = CEntity::EntityList.begin();
-        it != CEntity::EntityList.end();
+    for (auto it = EntityList.begin();
+        it != EntityList.end();
         it++)
     {
         (*it)->OnRender(Surface_Display);
@@ -138,31 +155,7 @@ void CApp::OnRender()
 
 void CApp::OnCleanup()
 {
-    // Cleanup all Sprites
-    for (std::vector<CSprite*>::iterator it = CSprite::SpriteList.begin();
-        it != CSprite::SpriteList.end();
-        it++)
-    {
-        delete *(it);
-    }
-    CSprite::SpriteList.clear();
-
-    // Cleanup all SpriteSheets
-    for (std::vector<CSpriteSheet*>::iterator it = CSpriteSheet::SpriteSheetList.begin();
-        it != CSpriteSheet::SpriteSheetList.end();
-        it++)
-    {
-        delete *(it);
-    }
-    CSpriteSheet::SpriteSheetList.clear();
-
-    // Cleanup all Entities
-    for (std::vector<CEntity*>::iterator it = CEntity::EntityList.begin();
-        it != CEntity::EntityList.end();
-        it++)
-    {
-        delete *(it);
-    }
+    EntityList.clear();
 
     SDL_Quit();
 }
@@ -184,18 +177,6 @@ void CApp::OnEvent(SDL_Event* Event)
         break;
 
     case SDL_KEYDOWN:
-        switch(Event->key.keysym.sym)
-        {
-        case SDLK_1:
-            MyEntity->Sprite = CSprite::MinecraftSprite; // Temp
-            break;
-
-        case SDLK_2:
-            MyEntity->Sprite = CSprite::MinecraftSprite2; // Temp
-            break;
-
-            default:;
-        }
         break;
 
     case SDL_KEYUP:

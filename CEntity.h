@@ -6,21 +6,18 @@
 #include "CBody.h"
 #include "CSprite.h"
 #include <iostream>
+#include <memory>
 
 class CEntity
 {
 public:
-    static std::vector<CEntity*> EntityList;
-
-    CEntity(CSprite* Sprite);
+    CEntity(std::shared_ptr<CSprite> Sprite);
     ~CEntity();
 
-public:
     CBody Body;
 
-    CSprite* Sprite;
+    std::shared_ptr<CSprite> Sprite;
 
-public:
     void OnLoop();
 
     void OnRender(SDL_Surface* Surf_Destination);

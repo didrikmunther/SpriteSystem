@@ -5,30 +5,22 @@
 #include "CSpriteSheet.h"
 #include "CSurface.h"
 #include <vector>
+#include <memory>
 
 class CSpriteSheet;
 
 class CSprite
 {
 public:
-    static std::vector<CSprite*> SpriteList;
-
-    static CSprite* MinecraftSprite;
-    static CSprite* MinecraftSprite2;
-
-public:
-    CSprite(int x, int y, int w, int h, CSpriteSheet* SpriteSheet);
+    CSprite(int x, int y, int w, int h, std::shared_ptr<CSpriteSheet> SpriteSheet);
     ~CSprite();
 
-public:
     SDL_Rect Offset;
 
-    CSpriteSheet* SpriteSheet;
+    std::shared_ptr<CSpriteSheet> SpriteSheet;
 
-public:
     void OnRender(int x, int y, SDL_Surface* Surf_Destination);
 
-public:
     SDL_Surface* GetSurface();
 
 };

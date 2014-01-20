@@ -3,12 +3,13 @@
 
 #include <SDL.h>
 #include <SDL_image.h>
+#include <memory>
+#include <vector>
+#include <map>
 #include <sstream>
 #include "CSurface.h"
-
 #include "CEntity.h"
-#include "CSprite.h"
-
+#include "CResourceManager.h"
 #include <iostream>
 
 class CApp
@@ -18,6 +19,16 @@ private:
     SDL_Event Event;
 
     bool Running;
+
+    //==
+
+    CResourceManager ResourceManager;
+
+    std::shared_ptr<CEntity> MyEntity;
+
+    std::vector<std::shared_ptr<CEntity>> EntityList;
+
+    //==
 
     const int WIDTH;
     const int HEIGHT;
@@ -44,7 +55,7 @@ private:
     Uint32 BackgroundColor;
     SDL_Rect BackgroundRect;
 
-    CEntity* MyEntity = new CEntity(CSprite::MinecraftSprite2); // This is a test entity
+
 
 public:
     CApp();
